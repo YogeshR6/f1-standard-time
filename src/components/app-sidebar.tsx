@@ -1,18 +1,22 @@
-import { Trophy, Home, CalendarCheck } from "lucide-react";
+"use client";
+import { Trophy, Home, CalendarCheck, PanelLeftIcon } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSubItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
 
 // Menu items.
 const items = [
@@ -34,29 +38,68 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const { pathname, isMobile } = useAuth();
+
+  const router = useRouter();
+
+  const { toggleSidebar, open, setOpenMobile } = useSidebar();
+
+  const handleSidebarHeaderClick = () => {
+    if (open && pathname !== "/") {
+      if (isMobile) setOpenMobile(false);
+      router.push("/");
+    } else {
+      toggleSidebar();
+    }
+  };
+  const handleSidebarMenuItemClick = (url: string) => {
+    if (pathname !== url) {
+      if (isMobile) setOpenMobile(false);
+      router.push(url);
+    }
+  };
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <Image
-            src="/logo/white_logo.png"
-            width={50}
-            height={50}
-            alt="F1ST Logo"
-          />
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              className="cursor-pointer group-data-[collapsible=icon]:size-10!"
+              onClick={handleSidebarHeaderClick}
+              tooltip="Expand"
+            >
+              <Image
+                src="/logo/white_logo.png"
+                width={60}
+                height={60}
+                alt="F1ST Logo"
+              />
+              <span className="truncate text-lg font-medium">
+                F1 Standard Time
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="mt-3">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton
+                    asChild
+                    className="py-6"
+                    tooltip={item.title}
+                  >
+                    <div
+                      onClick={() => handleSidebarMenuItemClick(item.url)}
+                      className="cursor-pointer"
+                    >
                       <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+                      <span className="text-lg">{item.title}</span>
+                    </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -64,6 +107,24 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="mb-2">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={toggleSidebar}
+              asChild
+              className="py-6"
+              tooltip="Expand"
+            >
+              <div className="cursor-pointer">
+                <PanelLeftIcon className="size-6" />
+                <span className="truncate text-lg">Collapse</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
