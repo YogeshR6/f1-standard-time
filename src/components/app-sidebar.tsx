@@ -1,5 +1,12 @@
 "use client";
-import { Trophy, Home, CalendarCheck, PanelLeftIcon } from "lucide-react";
+import {
+  Trophy,
+  Home,
+  CalendarCheck,
+  PanelLeftIcon,
+  Moon,
+  Sun,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -17,8 +24,9 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
-// Menu items.
 const items = [
   {
     title: "Home",
@@ -38,7 +46,7 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const { pathname, isMobile } = useAuth();
+  const { pathname, isMobile, theme, updateTheme } = useAuth();
 
   const router = useRouter();
 
@@ -52,12 +60,22 @@ export function AppSidebar() {
       toggleSidebar();
     }
   };
+
   const handleSidebarMenuItemClick = (url: string) => {
     if (pathname !== url) {
       if (isMobile) setOpenMobile(false);
       router.push(url);
     }
   };
+
+  const handleSwitchUpdate = (checked: boolean) => {
+    if (checked) {
+      updateTheme("dark");
+    } else {
+      updateTheme("light");
+    }
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -90,7 +108,11 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="py-6"
+                    className={cn(
+                      "py-6",
+                      pathname === item.url &&
+                        "bg-sidebar-primary-focused-background hover:bg-sidebar-primary-focused-background-hover text-sidebar-primary-focused-text hover:text-sidebar-primary-focused-text"
+                    )}
                     tooltip={item.title}
                   >
                     <div
@@ -103,6 +125,30 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="py-6"
+                  tooltip="Toggle theme"
+                >
+                  <div>
+                    <Moon onClick={toggleSidebar} className="cursor-pointer" />
+                    <span className="text-lg cursor-default">Dark Mode</span>
+                    <Switch
+                      checked={theme === "dark"}
+                      className="ml-auto cursor-pointer"
+                      onCheckedChange={handleSwitchUpdate}
+                      thumbIcon={
+                        theme === "dark" ? (
+                          <Moon className="h-3 w-3" />
+                        ) : (
+                          <Sun className="h-3 w-3" />
+                        )
+                      }
+                    />
+                  </div>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
