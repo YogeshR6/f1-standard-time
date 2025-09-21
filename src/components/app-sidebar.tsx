@@ -1,14 +1,18 @@
-import { Calendar, Home, Inbox } from "lucide-react";
+import { Trophy, Home, CalendarCheck } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSubItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
+import Image from "next/image";
 
 // Menu items.
 const items = [
@@ -20,18 +24,28 @@ const items = [
   {
     title: "Schedule",
     url: "/schedule",
-    icon: Inbox,
+    icon: CalendarCheck,
   },
   {
     title: "Standings",
     url: "/standings",
-    icon: Calendar,
+    icon: Trophy,
   },
 ];
 
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <SidebarMenu>
+          <Image
+            src="/logo/white_logo.png"
+            width={50}
+            height={50}
+            alt="F1ST Logo"
+          />
+        </SidebarMenu>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
