@@ -88,7 +88,11 @@ export function AppSidebar() {
               tooltip="Expand"
             >
               <Image
-                src="/logo/white_logo.png"
+                src={
+                  theme === "dark"
+                    ? "/logo/white_logo.png"
+                    : "/logo/black_logo.png"
+                }
                 width={60}
                 height={60}
                 alt="F1ST Logo"
